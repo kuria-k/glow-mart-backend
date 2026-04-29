@@ -1,7 +1,7 @@
 // routes/routes.jsx
 import { Routes, Route } from "react-router-dom";
 import { useCart } from "../hooks/usecart";
-import CartSidebar from "../components/CartSidebar";
+import CartSidebar from "../components/cartsidebar";
 import Home from "../pages/home";
 import Login from "../pages/login";
 import Blogs from "../pages/blogs";

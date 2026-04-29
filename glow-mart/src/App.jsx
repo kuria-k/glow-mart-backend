@@ -4,7 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppRoutes from "./routes/routes";
-import CartSidebar from "./components/CartSidebar";
+import CartSidebar from "./components/cartsidebar";
 import { CartProvider } from "./context/cartcontext"; // Import CartProvider
 
 function App() {

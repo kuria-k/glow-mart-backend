@@ -508,7 +508,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
-import MK from "../assets/untitled.png";
+import MK from "../assets/Untitled.png";
 import { login, isAuthenticated, getUser, checkAuth } from '../api';
 
 function Auth() {

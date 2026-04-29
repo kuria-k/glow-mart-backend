@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
-import CartSidebar from "../components/CartSidebar";
-import { useWishlist } from "../hooks/useWishlist";
-import { useCart } from "../hooks/useCart";
+import CartSidebar from "../components/cartsidebar";
+import { useWishlist } from "../hooks/usewishlist";
+import { useCart } from "../hooks/usecart";
 import { getProduct } from "../api";
 import ProductModal from "../components/productmodal";
 

@@ -1321,13 +1321,13 @@ import Footer from "../components/footer";
 import Whatsapp from "../components/whatsapp";
 import ProductModal from "../components/productmodal";
 // import CartSidebar from "../components/cartsidebar";
-import CartSidebar from '../components/CartSidebar';
+import CartSidebar from '../components/cartsidebar';
 import QuickViewModal from "../components/quickviewmodal";
 // import NewsletterPopup from "../components/newsletterpopup";
 import RecentlyViewed from "../components/recentlyviewed";
 import { getProducts, getCategories, createOrder, checkStock } from "../api";
 import { useCart } from "../hooks/usecart";
-import { useWishlist } from "../hooks/useWishlist";
+import { useWishlist } from "../hooks/usewishlist";
 
 /* ─────────────────────────────────────────────
    THEME STYLES (unchanged)

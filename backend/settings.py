@@ -306,6 +306,7 @@ CORS_PREFLIGHT_MAX_AGE = 86400
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
+    "https://your-frontend.vercel.app", 
     "http://localhost:5173",
     "http://localhost:3000",
     "http://127.0.0.1:5173",
@@ -371,6 +372,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',  # Required for sessions
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',  # Required for CSRF protection
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Required for auth

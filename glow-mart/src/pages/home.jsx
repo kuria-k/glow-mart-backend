@@ -3,14 +3,14 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import Whatsapp from "../components/whatsapp";
-import CartSidebar from "../components/CartSidebar";
+import CartSidebar from "../components/cartsidebar";
 import Suppliments from "../assets/suppliments.jpg";
 import Gym from "../assets/gymit.png";
 import Style from "../assets/glowing.png";
 import Beach from "../assets/beachs.png";
 import Sleep from "../assets/sonp.png";
 import { useCart } from "../hooks/usecart";
-import { useWishlist } from "../hooks/useWishlist";
+import { useWishlist } from "../hooks/usewishlist";
 import { createPortal } from "react-dom";
 
 function Landing() {
