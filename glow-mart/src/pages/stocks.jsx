@@ -1893,6 +1893,7 @@ const applyConc = (arr, concern) => {
    MAIN PAGE (unchanged)
 ═══════════════════════════════════════════ */
 const Products = () => {
+  console.log("🔥 Stocks page is rendering!");
   const [allProducts, setAllProducts] = useState([]);
   const [categories, setCategories]   = useState([]);
   const [loading, setLoading]         = useState(true);

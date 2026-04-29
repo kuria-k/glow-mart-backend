@@ -272,7 +272,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
 CORS_ALLOWED_ORIGINS = [
     "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
-    "https://glow-mart-frontend.vercel.app/"  # Replace with actual URL
+    "https://glow-mart-frontend.vercel.app/",  # Replace with actual URL
     "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:5500",
