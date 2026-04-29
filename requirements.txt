@@ -53,3 +53,5 @@ yarl==1.23.0
 zope.interface==8.3
 gunicorn==21.2.0
 whitenoise==6.6.0
+whitenoise==6.6.0
+whitenoise==6.12.0
