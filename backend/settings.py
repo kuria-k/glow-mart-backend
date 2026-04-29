@@ -260,6 +260,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '0.0.0.0',
+    'glow-mart-backend.onrender.com',  # ← ADD THIS
+    '.onrender.com',  # Allow all Render subdomains
     'hypermodest-irena-washy.ngrok-free.dev',
     '.ngrok-free.dev',
     '.ngrok.io',
@@ -269,6 +271,8 @@ ALLOWED_HOSTS = [
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
 
 CORS_ALLOWED_ORIGINS = [
+    "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
+    "https://glow-mart-frontend.vercel.app/"  # Replace with actual URL
     "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:5500",
@@ -306,12 +310,14 @@ CORS_PREFLIGHT_MAX_AGE = 86400
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
-    "https://your-frontend.vercel.app", 
+    "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
+    "https://your-frontend.vercel.app",  # Replace with actual URL
     "http://localhost:5173",
     "http://localhost:3000",
     "http://127.0.0.1:5173",
     "https://hypermodest-irena-washy.ngrok-free.dev",
     "https://*.ngrok-free.dev",
+    "https://*.onrender.com",  # Allow Render backends
 ]
 
 # ============= SESSION/COOKIE SETTINGS (CHANGED FOR COOKIE AUTH) =============
@@ -374,7 +380,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',  # Required for sessions
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',  # Required for CSRF protection
     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Required for auth
@@ -478,7 +483,8 @@ MPESA_CONFIG = {
     'CONSUMER_SECRET': '23XZzrSz9gs4hg5eRsTXvp3oYHGF9OvRBIZQafef14SOFlpStiyfAA070pR4MrQG',
     'BUSINESS_SHORTCODE': '174379',
     'PASSKEY': 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-    'CALLBACK_URL': 'https://hypermodest-irena-washy.ngrok-free.dev/api/mpesa/callback/',
+    'CALLBACK_URL': 'https://glow-mart-backend.onrender.com/api/mpesa/callback/',
+    # 'CALLBACK_URL': 'https://hypermodest-irena-washy.ngrok-free.dev/api/mpesa/callback/',
     'ENVIRONMENT': 'sandbox',
     'TIMEOUT_URL': 'https://hypermodest-irena-washy.ngrok-free.dev/api/mpesa/timeout/',
     'RESULT_URL': 'https://hypermodest-irena-washy.ngrok-free.dev/api/mpesa/result/',
