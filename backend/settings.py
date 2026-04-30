@@ -253,7 +253,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-zedp_=pj+frk-x5*y$dsqk0%*50rk1kyddg=9(-4-h$*(2-hjj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # IMPORTANT: Add all allowed hosts
 ALLOWED_HOSTS = [
