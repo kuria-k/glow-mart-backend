@@ -268,11 +268,11 @@ ALLOWED_HOSTS = [
 ]
 
 # ============= CORS SETTINGS =============
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
+CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
     "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
-    "https://glow-mart-frontend.vercel.app/",  # Replace with actual URL
+    "https://glow-mart-frontend.vercel.app",  # Replace with actual URL
     "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:5500",
@@ -483,11 +483,9 @@ MPESA_CONFIG = {
     'CONSUMER_SECRET': '23XZzrSz9gs4hg5eRsTXvp3oYHGF9OvRBIZQafef14SOFlpStiyfAA070pR4MrQG',
     'BUSINESS_SHORTCODE': '174379',
     'PASSKEY': 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-    'CALLBACK_URL': 'https://glow-mart-backend.onrender.com/api/mpesa/callback/',
-    # 'CALLBACK_URL': 'https://hypermodest-irena-washy.ngrok-free.dev/api/mpesa/callback/',
-    'ENVIRONMENT': 'sandbox',
-    'TIMEOUT_URL': 'https://hypermodest-irena-washy.ngrok-free.dev/api/mpesa/timeout/',
-    'RESULT_URL': 'https://hypermodest-irena-washy.ngrok-free.dev/api/mpesa/result/',
+    'CALLBACK_URL': 'https://glow-mart-backend-1.onrender.com/api/mpesa/callback/',
+    'TIMEOUT_URL': 'https://glow-mart-backend-1.onrender.com/api/mpesa/timeout/',
+    'RESULT_URL': 'https://glow-mart-backend-1.onrender.com/api/mpesa/result/',
 }
 
 # ============= Orders Settings =============
