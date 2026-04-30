@@ -256,15 +256,21 @@ SECRET_KEY = 'django-insecure-zedp_=pj+frk-x5*y$dsqk0%*50rk1kyddg=9(-4-h$*(2-hjj
 DEBUG = False
 
 # IMPORTANT: Add all allowed hosts
+# ALLOWED_HOSTS = [
+#     'localhost',
+#     '127.0.0.1',
+#     '0.0.0.0',
+#     'glow-mart-backend.onrender.com',  # ← ADD THIS
+#     '.onrender.com',  # Allow all Render subdomains
+#     'hypermodest-irena-washy.ngrok-free.dev',
+#     '.ngrok-free.dev',
+#     '.ngrok.io',
+# ]
+
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '0.0.0.0',
-    'glow-mart-backend.onrender.com',  # ← ADD THIS
-    '.onrender.com',  # Allow all Render subdomains
+    'glow-mart-backend-1.onrender.com',
+    '.onrender.com',
     'hypermodest-irena-washy.ngrok-free.dev',
-    '.ngrok-free.dev',
-    '.ngrok.io',
 ]
 
 # ============= CORS SETTINGS =============
@@ -291,7 +297,6 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
-    'access-control-allow-origin',
 ]
 
 CORS_ALLOW_METHODS = [
@@ -309,33 +314,42 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_PREFLIGHT_MAX_AGE = 86400
 
 # CSRF Trusted Origins
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
+#     "https://your-frontend.vercel.app",  # Replace with actual URL
+#     "http://localhost:5173",
+#     "http://localhost:3000",
+#     "http://127.0.0.1:5173",
+#     "https://hypermodest-irena-washy.ngrok-free.dev",
+#     "https://*.ngrok-free.dev",
+#     "https://*.onrender.com",  # Allow Render backends
+# ]
+
 CSRF_TRUSTED_ORIGINS = [
-    "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
-    "https://your-frontend.vercel.app",  # Replace with actual URL
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:5173",
+    "https://glow-mart.vercel.app",
+    "https://glow-mart-frontend.vercel.app",
     "https://hypermodest-irena-washy.ngrok-free.dev",
-    "https://*.ngrok-free.dev",
-    "https://*.onrender.com",  # Allow Render backends
 ]
+# ============= SESSION/COOKIE SETTINGS (FIXED FOR CROSS-ORIGIN) =============
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 86400
+SESSION_COOKIE_HTTPONLY = True
 
-# ============= SESSION/COOKIE SETTINGS (CHANGED FOR COOKIE AUTH) =============
-# Session settings
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database for sessions
-SESSION_COOKIE_AGE = 86400  # 24 hours in seconds
-SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access (security)
-SESSION_COOKIE_SAMESITE = 'Lax'  # Changed from 'None' for better security
-SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
-SESSION_SAVE_EVERY_REQUEST = True  # Refresh session on each request
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session after browser close
+# 🔴 MUST be None for cross-origin (Vercel ↔ Render)
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
 
-# CSRF settings (important for POST requests)
-CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to read CSRF token
-CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SECURE = False
-CSRF_USE_SESSIONS = False  # Store CSRF token in cookie, not session
+# 🔴 MUST be True in production (HTTPS)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+CSRF_COOKIE_HTTPONLY = False
+CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
+
 
 # ============= ASGI/WebSocket Settings =============
 ASGI_APPLICATION = "backend.asgi.application"

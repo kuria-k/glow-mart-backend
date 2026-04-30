@@ -189,7 +189,7 @@ const createOrderAfterPayment = async (receiptNumber, transactionId) => {
     const isProduction = window.location.hostname !== 'localhost';
     const wsProtocol = isProduction ? 'wss://' : 'ws://';
     const baseUrl = isProduction 
-      ? 'hypermodest-irena-washy.ngrok-free.dev' 
+    ? 'glow-mart-backend-1.onrender.com'
       : 'localhost:8000';
     
     const wsUrl = `${wsProtocol}${baseUrl}/ws/mpesa/${checkoutId}/`;

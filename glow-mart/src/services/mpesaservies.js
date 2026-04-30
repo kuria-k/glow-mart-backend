@@ -139,7 +139,7 @@
 
 import axios from "axios";
 
-const API_BASE_URL = 'https://hypermodest-irena-washy.ngrok-free.dev/api';
+const API_BASE_URL = 'https://glow-mart-backend-1.onrender.com/api';
 
 const mpesaClient = axios.create({
   baseURL: API_BASE_URL,
