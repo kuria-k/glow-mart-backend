@@ -243,42 +243,392 @@
 
 # settings.py - Updated for Session/Cookie Authentication
 
+# import os
+# from pathlib import Path
+# from datetime import timedelta
+
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = 'django-insecure-zedp_=pj+frk-x5*y$dsqk0%*50rk1kyddg=9(-4-h$*(2-hjj'
+
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = False
+
+# # IMPORTANT: Add all allowed hosts
+# # ALLOWED_HOSTS = [
+# #     'localhost',
+# #     '127.0.0.1',
+# #     '0.0.0.0',
+# #     'glow-mart-backend.onrender.com',  # ← ADD THIS
+# #     '.onrender.com',  # Allow all Render subdomains
+# #     'hypermodest-irena-washy.ngrok-free.dev',
+# #     '.ngrok-free.dev',
+# #     '.ngrok.io',
+# # ]
+
+# ALLOWED_HOSTS = [
+#     'glow-mart-backend-1.onrender.com',
+#     '.onrender.com',
+#     'hypermodest-irena-washy.ngrok-free.dev',
+# ]
+
+# # ============= CORS SETTINGS =============
+# CORS_ALLOW_ALL_ORIGINS = False
+
+# CORS_ALLOWED_ORIGINS = [
+#     "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
+#     "https://glow-mart-frontend.vercel.app",  # Replace with actual URL
+#     "http://localhost:5173",
+#     "http://localhost:3000",
+#     "http://localhost:5500",
+#     "http://127.0.0.1:5173",
+#     "http://127.0.0.1:3000",
+#     "https://hypermodest-irena-washy.ngrok-free.dev",
+# ]
+
+# CORS_ALLOW_HEADERS = [
+#     'accept',
+#     'accept-encoding',
+#     'authorization',
+#     'content-type',
+#     'dnt',
+#     'origin',
+#     'user-agent',
+#     'x-csrftoken',
+#     'x-requested-with',
+# ]
+
+# CORS_ALLOW_METHODS = [
+#     'DELETE',
+#     'GET',
+#     'OPTIONS',
+#     'PATCH',
+#     'POST',
+#     'PUT',
+# ]
+
+# # CRITICAL: Allow credentials (cookies)
+# CORS_ALLOW_CREDENTIALS = True
+
+# CORS_PREFLIGHT_MAX_AGE = 86400
+
+# # CSRF Trusted Origins
+# # CSRF_TRUSTED_ORIGINS = [
+# #     "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
+# #     "https://your-frontend.vercel.app",  # Replace with actual URL
+# #     "http://localhost:5173",
+# #     "http://localhost:3000",
+# #     "http://127.0.0.1:5173",
+# #     "https://hypermodest-irena-washy.ngrok-free.dev",
+# #     "https://*.ngrok-free.dev",
+# #     "https://*.onrender.com",  # Allow Render backends
+# # ]
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "https://glow-mart.vercel.app",
+#     "https://glow-mart-frontend.vercel.app",
+#     "https://hypermodest-irena-washy.ngrok-free.dev",
+# ]
+# # ============= SESSION/COOKIE SETTINGS (FIXED FOR CROSS-ORIGIN) =============
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+# SESSION_COOKIE_AGE = 86400
+# SESSION_COOKIE_HTTPONLY = True
+
+# # 🔴 MUST be None for cross-origin (Vercel ↔ Render)
+# SESSION_COOKIE_SAMESITE = 'None'
+# CSRF_COOKIE_SAMESITE = 'None'
+
+# # 🔴 MUST be True in production (HTTPS)
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+
+# SESSION_SAVE_EVERY_REQUEST = True
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# CSRF_COOKIE_HTTPONLY = False
+# CSRF_USE_SESSIONS = False
+# CSRF_COOKIE_NAME = 'csrftoken'
+
+# APPEND_SLASH = False
+
+
+# # ============= ASGI/WebSocket Settings =============
+# ASGI_APPLICATION = "backend.asgi.application"
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer",
+#     },
+# }
+
+# # Application definition
+# INSTALLED_APPS = [
+#     'daphne',
+#     'corsheaders',
+#     'channels',
+#     'django.contrib.admin',
+#     'django.contrib.auth',
+#     'django.contrib.contenttypes',
+#     'django.contrib.sessions',  # Required for sessions
+#     'django.contrib.messages',
+#     'django.contrib.staticfiles',
+    
+#     # Third party apps
+#     'rest_framework',
+#     'rest_framework_simplejwt',  # COMMENT OUT - Not needed for session auth
+#     'sslserver',
+    
+#     # Custom apps
+#     'dashboard',
+#     'inventory',
+#     'notifications',
+#     'orders',
+#     'reports',
+#     'users',
+#     'mpesa',
+#     'settings',
+#     'whitenoise',
+# ]
+
+# MIDDLEWARE = [
+#     'corsheaders.middleware.CorsMiddleware',
+#     'django.middleware.security.SecurityMiddleware',
+#     'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
+#     'django.contrib.sessions.middleware.SessionMiddleware',  # Required for sessions
+#     'django.middleware.common.CommonMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',  # Required for CSRF protection
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',  # Required for auth
+#     'django.contrib.messages.middleware.MessageMiddleware',
+#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+# ]
+
+# ROOT_URLCONF = 'backend.urls'
+
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [],
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'django.template.context_processors.debug',
+#                 'django.template.context_processors.request',
+#                 'django.contrib.auth.context_processors.auth',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
+
+# WSGI_APPLICATION = 'backend.wsgi.application'
+
+# # Database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# # Password validation
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
+
+# # Internationalization
+# LANGUAGE_CODE = 'en-us'
+# TIME_ZONE = 'Africa/Nairobi'
+# USE_I18N = True
+# USE_TZ = True
+
+# # Static files (CSS, JavaScript, Images)
+# STATIC_URL = 'static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
+
+# # Media files
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# # Default primary key field type
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# # ============= REST FRAMEWORK SETTINGS (UPDATED FOR SESSION AUTH) =============
+# # settings.py - Update REST_FRAMEWORK settings
+# REST_FRAMEWORK = {
+#    'DEFAULT_AUTHENTICATION_CLASSES': (
+#     'rest_framework.authentication.SessionAuthentication',
+# ),
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',
+#     ),
+#     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+#     'PAGE_SIZE': 20,
+#     'DEFAULT_THROTTLE_CLASSES': [],  # Disable throttling completely
+#     # OR increase the limits:
+#     'DEFAULT_THROTTLE_RATES': {
+#         'anon': '1000/minute',  # Increased from 100/day
+#         'user': '10000/minute',  # Increased from 1000/day
+#     },
+# }
+
+# # ============= AUTHENTICATION BACKENDS =============
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',  # Default backend
+# ]
+
+# # ============= M-Pesa Configuration =============
+# MPESA_API_URL = 'https://sandbox.safaricom.co.ke'
+
+# MPESA_CONFIG = {
+#     'CONSUMER_KEY': 'DiyO3HgTpc5PuM1xRNdBbXppU7YWE1vuYnlvGZMRBVwzwZcE',
+#     'CONSUMER_SECRET': '23XZzrSz9gs4hg5eRsTXvp3oYHGF9OvRBIZQafef14SOFlpStiyfAA070pR4MrQG',
+#     'BUSINESS_SHORTCODE': '174379',
+#     'PASSKEY': 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
+#     'CALLBACK_URL': 'https://glow-mart-backend-1.onrender.com/api/mpesa/callback/',
+#     'TIMEOUT_URL': 'https://glow-mart-backend-1.onrender.com/api/mpesa/timeout/',
+#     'RESULT_URL': 'https://glow-mart-backend-1.onrender.com/api/mpesa/result/',
+# }
+
+# # ============= Orders Settings =============
+# ORDER_STATUS_CHOICES = [
+#     ('pending', 'Pending'),
+#     ('processing', 'Processing'),
+#     ('completed', 'Completed'),
+#     ('cancelled', 'Cancelled'),
+#     ('refunded', 'Refunded'),
+# ]
+
+# PAYMENT_STATUS_CHOICES = [
+#     ('pending', 'Pending'),
+#     ('processing', 'Processing'),
+#     ('completed', 'Completed'),
+#     ('failed', 'Failed'),
+#     ('refunded', 'Refunded'),
+# ]
+
+# # ============= Logging Configuration =============
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '{levelname} {asctime} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple',
+#         },
+#         'file': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'debug.log',
+#             'formatter': 'verbose',
+#         },
+#         'mpesa_file': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'mpesa_debug.log',
+#             'formatter': 'verbose',
+#         },
+#         'orders_file': {
+#             'class': 'logging.FileHandler',
+#             'filename': 'orders.log',
+#             'formatter': 'verbose',
+#         },
+#     },
+#     'loggers': {
+#         'mpesa': {
+#             'handlers': ['console', 'mpesa_file'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         },
+#         'orders': {
+#             'handlers': ['console', 'orders_file'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         },
+#         'django': {
+#             'handlers': ['console', 'file'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         },
+#         'corsheaders': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
+
+# # ============= Security Settings =============
+# if not DEBUG:
+#     SECURE_SSL_REDIRECT = False  # ❌ keep OFF on Render
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+#     SESSION_COOKIE_SECURE = True
+#     CSRF_COOKIE_SECURE = True
+
+#     SECURE_BROWSER_XSS_FILTER = True
+#     SECURE_CONTENT_TYPE_NOSNIFF = True
+#     X_FRAME_OPTIONS = 'DENY'
+
+#     SECURE_HSTS_SECONDS = 0  # ❌ disable HSTS for now (important)
+
+# # ============= Email Configuration =============
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+# DEFAULT_FROM_EMAIL = 'GlowMart <noreply@glowmart.com>'
+
+
 import os
 from pathlib import Path
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# ================= SECURITY =================
 SECRET_KEY = 'django-insecure-zedp_=pj+frk-x5*y$dsqk0%*50rk1kyddg=9(-4-h$*(2-hjj'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-# IMPORTANT: Add all allowed hosts
-# ALLOWED_HOSTS = [
-#     'localhost',
-#     '127.0.0.1',
-#     '0.0.0.0',
-#     'glow-mart-backend.onrender.com',  # ← ADD THIS
-#     '.onrender.com',  # Allow all Render subdomains
-#     'hypermodest-irena-washy.ngrok-free.dev',
-#     '.ngrok-free.dev',
-#     '.ngrok.io',
-# ]
 
 ALLOWED_HOSTS = [
     'glow-mart-backend-1.onrender.com',
     '.onrender.com',
     'hypermodest-irena-washy.ngrok-free.dev',
+    'localhost',
+    '127.0.0.1',
 ]
 
-# ============= CORS SETTINGS =============
+# ================= CORS SETTINGS =================
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
-    "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
-    "https://glow-mart-frontend.vercel.app",  # Replace with actual URL
+    "https://glow-mart.vercel.app",
+    "https://glow-mart-frontend.vercel.app",
     "http://localhost:5173",
     "http://localhost:3000",
     "http://localhost:5500",
@@ -308,38 +658,24 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-# CRITICAL: Allow credentials (cookies)
-CORS_ALLOW_CREDENTIALS = True
-
+CORS_ALLOW_CREDENTIALS = False
 CORS_PREFLIGHT_MAX_AGE = 86400
 
-# CSRF Trusted Origins
-# CSRF_TRUSTED_ORIGINS = [
-#     "https://glow-mart.vercel.app",  # ← ADD YOUR VERCEL URL
-#     "https://your-frontend.vercel.app",  # Replace with actual URL
-#     "http://localhost:5173",
-#     "http://localhost:3000",
-#     "http://127.0.0.1:5173",
-#     "https://hypermodest-irena-washy.ngrok-free.dev",
-#     "https://*.ngrok-free.dev",
-#     "https://*.onrender.com",  # Allow Render backends
-# ]
-
+# ================= CSRF =================
 CSRF_TRUSTED_ORIGINS = [
     "https://glow-mart.vercel.app",
     "https://glow-mart-frontend.vercel.app",
     "https://hypermodest-irena-washy.ngrok-free.dev",
+    "https://glow-mart-backend-1.onrender.com",
 ]
-# ============= SESSION/COOKIE SETTINGS (FIXED FOR CROSS-ORIGIN) =============
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 86400
 SESSION_COOKIE_HTTPONLY = True
 
-# 🔴 MUST be None for cross-origin (Vercel ↔ Render)
 SESSION_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SAMESITE = 'None'
 
-# 🔴 MUST be True in production (HTTPS)
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
@@ -350,8 +686,9 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
 
+APPEND_SLASH = True
 
-# ============= ASGI/WebSocket Settings =============
+# ================= ASGI / CHANNELS =================
 ASGI_APPLICATION = "backend.asgi.application"
 
 CHANNEL_LAYERS = {
@@ -360,24 +697,23 @@ CHANNEL_LAYERS = {
     },
 }
 
-# Application definition
+# ================= INSTALLED APPS =================
 INSTALLED_APPS = [
     'daphne',
     'corsheaders',
     'channels',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',  # Required for sessions
+    'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # Third party apps
+
     'rest_framework',
-    # 'rest_framework_simplejwt',  # COMMENT OUT - Not needed for session auth
+    'rest_framework_simplejwt',
     'sslserver',
-    
-    # Custom apps
+
     'dashboard',
     'inventory',
     'notifications',
@@ -389,20 +725,26 @@ INSTALLED_APPS = [
     'whitenoise',
 ]
 
+# ================= MIDDLEWARE (FIXED ORDER) =================
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',  # Required for sessions
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # Required for CSRF protection
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Required for auth
+
+    # TEMP SAFETY (prevents redirect/CSRF loops on Render)
+    # 'django.middleware.csrf.CsrfViewMiddleware',
+
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
 
+# ================= TEMPLATES =================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -421,7 +763,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database
+# ================= DATABASE =================
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -429,67 +771,57 @@ DATABASES = {
     }
 }
 
-# Password validation
+# ================= AUTH =================
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Internationalization
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# ================= INTERNATIONALIZATION =================
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Africa/Nairobi'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# ================= STATIC / MEDIA =================
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ============= REST FRAMEWORK SETTINGS (UPDATED FOR SESSION AUTH) =============
-# settings.py - Update REST_FRAMEWORK settings
+# ================= REST FRAMEWORK =================
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.AllowAny",
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
-    'DEFAULT_THROTTLE_CLASSES': [],  # Disable throttling completely
-    # OR increase the limits:
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '1000/minute',  # Increased from 100/day
-        'user': '10000/minute',  # Increased from 1000/day
-    },
 }
 
-# ============= AUTHENTICATION BACKENDS =============
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # Default backend
-]
+# ================= JWT =================
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
-# ============= M-Pesa Configuration =============
+# ================= M-PESA =================
 MPESA_API_URL = 'https://sandbox.safaricom.co.ke'
 
 MPESA_CONFIG = {
@@ -502,7 +834,7 @@ MPESA_CONFIG = {
     'RESULT_URL': 'https://glow-mart-backend-1.onrender.com/api/mpesa/result/',
 }
 
-# ============= Orders Settings =============
+# ================= ORDER STATUSES =================
 ORDER_STATUS_CHOICES = [
     ('pending', 'Pending'),
     ('processing', 'Processing'),
@@ -519,78 +851,35 @@ PAYMENT_STATUS_CHOICES = [
     ('refunded', 'Refunded'),
 ]
 
-# ============= Logging Configuration =============
+# ================= LOGGING =================
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {asctime} {message}',
-            'style': '{',
-        },
-    },
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-            'formatter': 'verbose',
-        },
-        'mpesa_file': {
-            'class': 'logging.FileHandler',
-            'filename': 'mpesa_debug.log',
-            'formatter': 'verbose',
-        },
-        'orders_file': {
-            'class': 'logging.FileHandler',
-            'filename': 'orders.log',
-            'formatter': 'verbose',
-        },
+        'console': {'class': 'logging.StreamHandler'},
     },
-    'loggers': {
-        'mpesa': {
-            'handlers': ['console', 'mpesa_file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'orders': {
-            'handlers': ['console', 'orders_file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-        'corsheaders': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
     },
 }
 
-# ============= Security Settings =============
+# ================= SECURITY (FIXED FOR RENDER) =================
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = False
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
+
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
 
-# ============= Email Configuration =============
+    SECURE_HSTS_SECONDS = 0
+
+# ================= EMAIL =================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587

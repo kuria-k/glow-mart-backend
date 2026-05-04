@@ -562,7 +562,7 @@ function Auth() {
       // After successful login, get user info
       const token = localStorage.getItem('access_token');
       if (token) {
-        const userResponse = await fetch('http://localhost:8000/api/user/me/', {
+        const userResponse = await fetch(`${API_BASE}/user/me/`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
