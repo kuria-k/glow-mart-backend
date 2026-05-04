@@ -722,7 +722,6 @@ INSTALLED_APPS = [
     'users',
     'mpesa',
     'settings',
-    'whitenoise',
 ]
 
 # ================= MIDDLEWARE (FIXED ORDER) =================
