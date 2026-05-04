@@ -867,9 +867,8 @@ LOGGING = {
 # ================= SECURITY (FIXED FOR RENDER) =================
 if not DEBUG:
     SECURE_SSL_REDIRECT = False
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    USE_X_FORWARDED_HOST = True
-
+    SECURE_PROXY_SSL_HEADER = None
+    USE_X_FORWARDED_HOST = False
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 

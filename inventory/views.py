@@ -5,16 +5,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+# class ProductViewSet(viewsets.ModelViewSet):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
     
-    def get_permissions(self):
-        # Allow anyone to view products (list and retrieve)
-        if self.action in ['list', 'retrieve']:
-            return [AllowAny()]
-        # Require authentication for create, update, delete
-        return [IsAuthenticated()]
+#     def get_permissions(self):
+#         # Allow anyone to view products (list and retrieve)
+#         if self.action in ['list', 'retrieve']:
+#             return [AllowAny()]
+#         # Require authentication for create, update, delete
+#         return [IsAuthenticated()]
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
