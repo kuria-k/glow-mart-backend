@@ -28,27 +28,29 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: false,
+  withCredentials: true,
 });
 
 // Request interceptor - ADD JWT TOKEN
-// Request interceptor - ADD JWT TOKEN
 api.interceptors.request.use(
   (config) => {
-    // Don't add auth headers to OPTIONS/preflight requests
-    if (config.method === 'options' || config.method === 'OPTIONS') {
-      return config;
-    }
-    
     // Get token from localStorage
     const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     
+    // Add CSRF token for non-GET requests
+    if (config.method !== 'get') {
+      const csrfToken = getCSRFToken();
+      if (csrfToken) {
+        config.headers['X-CSRFToken'] = csrfToken;
+      }
+    }
+    
     console.log(`📤 ${config.method?.toUpperCase()} ${config.url}`, {
       hasAuth: !!config.headers.Authorization,
-      method: config.method
+      hasCSRF: !!config.headers['X-CSRFToken']
     });
     
     return config;
