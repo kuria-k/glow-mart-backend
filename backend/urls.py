@@ -48,17 +48,17 @@ def home_view(request):
 
 # Global OPTIONS handler for CORS preflight
 @csrf_exempt
-@require_http_methods(["OPTIONS"])
 def cors_options_handler(request, *args, **kwargs):
-    """Handle CORS preflight requests globally"""
-    response = HttpResponse()
-    response.status_code = 200
-    response['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://glow-mart-frontend.vercel.app')
-    response['Access-Control-Allow-Credentials'] = 'true'
-    response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-    response['Access-Control-Allow-Headers'] = 'authorization, content-type, x-csrftoken, accept, origin, user-agent'
-    response['Access-Control-Max-Age'] = '86400'
-    return response
+    if request.method == "OPTIONS":
+        response = HttpResponse()
+        response.status_code = 200
+        response['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
+        response['Access-Control-Allow-Credentials'] = 'true'
+        response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+        response['Access-Control-Allow-Headers'] = 'authorization, content-type, x-csrftoken'
+        return response
+
+    return None  
 
 urlpatterns = [
     # Global OPTIONS handler (must be first)
@@ -74,7 +74,6 @@ urlpatterns = [
     
     # App URLs
     path('api/inventory/', include('inventory.urls')),  
-    path('api/inventory', include('inventory.urls')),
     path('api/orders/', include('orders.urls')),  
     path('api/notifications/', include('notifications.urls')), 
     path('api/mpesa/', include('mpesa.urls')),
