@@ -40,6 +40,7 @@
 #         ]
 
 from rest_framework import serializers
+from django.utils import timezone
 from .models import Product, Category, Supplier, ProductImage
 
 
@@ -62,27 +63,35 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # Writable relations
-    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    # ✅ Relations (safe)
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        allow_null=True,
+        required=False
+    )
     supplier = serializers.PrimaryKeyRelatedField(
-        queryset=Supplier.objects.all(), allow_null=True, required=False
+        queryset=Supplier.objects.all(),
+        allow_null=True,
+        required=False
     )
 
-    # Read-only nested details
+    # ✅ Read-only nested details
     category_detail = CategorySerializer(source="category", read_only=True)
     supplier_detail = SupplierSerializer(source="supplier", read_only=True)
 
-    # Images
+    # ✅ Images
     extra_images = ProductImageSerializer(many=True, read_only=True)
     new_images = serializers.ListField(
-        child=serializers.ImageField(), write_only=True, required=False
+        child=serializers.ImageField(),
+        write_only=True,
+        required=False
     )
 
-    # ✅ FIXED: Discount fields are now writable
+    # ✅ Discount fields
     discount_percent = serializers.IntegerField(required=False, default=0)
     discount_expiry = serializers.DateTimeField(required=False, allow_null=True)
 
-    # Computed fields
+    # ✅ Computed fields (SAFE)
     current_price = serializers.SerializerMethodField()
     is_discount_active = serializers.SerializerMethodField()
 
@@ -110,16 +119,24 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
 
     # -------------------
-    # Computed methods
+    # ✅ Computed logic (NO MODEL DEPENDENCY)
     # -------------------
-    def get_current_price(self, obj):
-        return obj.current_price
-
     def get_is_discount_active(self, obj):
-        return obj.is_discount_active
+        if not obj.discount_percent or not obj.discount_expiry:
+            return False
+        return obj.discount_expiry > timezone.now()
+
+    def get_current_price(self, obj):
+        if (
+            obj.discount_percent
+            and obj.discount_expiry
+            and obj.discount_expiry > timezone.now()
+        ):
+            return float(obj.price) * (1 - obj.discount_percent / 100)
+        return float(obj.price)
 
     # -------------------
-    # Validation
+    # ✅ Validation
     # -------------------
     def validate_discount_percent(self, value):
         if value < 0 or value > 100:
@@ -140,22 +157,28 @@ class ProductSerializer(serializers.ModelSerializer):
         return data
 
     # -------------------
-    # Create & Update
+    # ✅ Create
     # -------------------
     def create(self, validated_data):
         new_images = validated_data.pop("new_images", [])
-        product = super().create(validated_data)
+        product = Product.objects.create(**validated_data)
 
         for img in new_images:
             ProductImage.objects.create(product=product, image=img)
 
         return product
 
+    # -------------------
+    # ✅ Update
+    # -------------------
     def update(self, instance, validated_data):
         new_images = validated_data.pop("new_images", [])
-        product = super().update(instance, validated_data)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
 
         for img in new_images:
-            ProductImage.objects.create(product=product, image=img)
+            ProductImage.objects.create(product=instance, image=img)
 
-        return product
+        return instance
