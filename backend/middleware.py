@@ -5,7 +5,7 @@ class ForceCorsMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
 
-        response["Access-Control-Allow-Origin"] = "http://localhost:5173"
+        response["Access-Control-Allow-Origin"] = "glow-mart-frontend.vercel.app"
         response["Access-Control-Allow-Credentials"] = "true"
         response["Access-Control-Allow-Headers"] = "content-type, authorization"
         response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS, PUT, DELETE"
