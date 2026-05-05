@@ -28,6 +28,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 // Request interceptor - ADD JWT TOKEN
@@ -104,6 +105,7 @@ export const publicApi = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+   withCredentials: true,
 });
 
 // -------------------- AUTHENTICATION --------------------
