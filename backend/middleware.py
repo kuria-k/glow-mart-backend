@@ -1,27 +1,38 @@
 from django.http import HttpResponse
-class ForceCorsMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
+from django.utils.deprecation import MiddlewareMixin
 
-    def __call__(self, request):
-        # Handle OPTIONS preflight request FIRST
+class ForceCorsMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        # Handle OPTIONS preflight requests
         if request.method == 'OPTIONS':
             response = HttpResponse()
             response.status_code = 200
-            # Add CORS headers
-            response["Access-Control-Allow-Origin"] = "https://glow-mart-frontend.vercel.app"
-            response["Access-Control-Allow-Credentials"] = "true"
-            response["Access-Control-Allow-Headers"] = "content-type, authorization, x-csrftoken"
-            response["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+            # Get origin from request or use default
+            origin = request.headers.get('Origin', 'https://glow-mart-frontend.vercel.app')
+            response['Access-Control-Allow-Origin'] = origin
+            response['Access-Control-Allow-Credentials'] = 'true'
+            response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+            response['Access-Control-Allow-Headers'] = 'authorization, content-type, x-csrftoken, accept, origin, user-agent'
+            response['Access-Control-Max-Age'] = '86400'
             return response
+        return None
+
+    def process_response(self, request, response):
+        # Add CORS headers to all responses
+        origin = request.headers.get('Origin', 'https://glow-mart-frontend.vercel.app')
         
-        # Process normal request
-        response = self.get_response(request)
+        # Only add CORS headers if origin is allowed
+        allowed_origins = [
+            'https://glow-mart.vercel.app',
+            'https://glow-mart-frontend.vercel.app',
+            'http://localhost:5173',
+            'http://localhost:3000',
+        ]
         
-        # Add CORS headers to normal responses
-        response["Access-Control-Allow-Origin"] = "https://glow-mart-frontend.vercel.app"
-        response["Access-Control-Allow-Credentials"] = "true"
-        response["Access-Control-Allow-Headers"] = "content-type, authorization, x-csrftoken"
-        response["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        if origin in allowed_origins:
+            response['Access-Control-Allow-Origin'] = origin
+            response['Access-Control-Allow-Credentials'] = 'true'
+            response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+            response['Access-Control-Allow-Headers'] = 'authorization, content-type, x-csrftoken, accept, origin, user-agent'
         
         return response

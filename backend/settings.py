@@ -686,7 +686,8 @@ CSRF_COOKIE_HTTPONLY = False
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
 
-APPEND_SLASH = True
+# CHANGE THIS - Important! Prevents trailing slash redirects
+APPEND_SLASH = False  # Changed from True to False
 
 # ================= ASGI / CHANNELS =================
 ASGI_APPLICATION = "backend.asgi.application"
@@ -724,23 +725,22 @@ INSTALLED_APPS = [
     'settings',
 ]
 
-# ================= MIDDLEWARE (FIXED ORDER) =================
+# ================= MIDDLEWARE (UPDATED ORDER) =================
 MIDDLEWARE = [
-    'backend.middleware.ForceCorsMiddleware',
+    'backend.middleware.ForceCorsMiddleware',  # Your custom middleware FIRST
+    'corsheaders.middleware.CorsMiddleware',   # Corsheaders second
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-
-    # TEMP SAFETY (prevents redirect/CSRF loops on Render)
-    # 'django.middleware.csrf.CsrfViewMiddleware',
-
+    # 'django.middleware.csrf.CsrfViewMiddleware',  # Keep commented for now
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -812,6 +812,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'UNAUTHENTICATED_USER': None,
 }
 
 # ================= JWT =================

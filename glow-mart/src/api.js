@@ -32,25 +32,23 @@ const api = axios.create({
 });
 
 // Request interceptor - ADD JWT TOKEN
+// Request interceptor - ADD JWT TOKEN
 api.interceptors.request.use(
   (config) => {
+    // Don't add auth headers to OPTIONS/preflight requests
+    if (config.method === 'options' || config.method === 'OPTIONS') {
+      return config;
+    }
+    
     // Get token from localStorage
     const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Add CSRF token for non-GET requests
-    if (config.method !== 'get') {
-      const csrfToken = getCSRFToken();
-      if (csrfToken) {
-        config.headers['X-CSRFToken'] = csrfToken;
-      }
-    }
-    
     console.log(`📤 ${config.method?.toUpperCase()} ${config.url}`, {
       hasAuth: !!config.headers.Authorization,
-      hasCSRF: !!config.headers['X-CSRFToken']
+      method: config.method
     });
     
     return config;
@@ -64,7 +62,18 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // CRITICAL FIX: Ignore OPTIONS/preflight requests - they always get 401 but shouldn't redirect
+    if (originalRequest.method === 'options' || originalRequest.method === 'OPTIONS') {
+      return Promise.reject(error);
+    }
+    
+    // Also ignore public endpoints that don't need auth
+    const isPublicEndpoint = originalRequest.url?.includes('/inventory/public/') || 
+                              originalRequest.url?.includes('/user/token/') ||
+                              originalRequest.url?.includes('/user/me/');
+    
+    // Handle 401 Unauthorized responses
+    if (error.response?.status === 401 && !originalRequest._retry && !isPublicEndpoint) {
       originalRequest._retry = true;
       
       const refreshToken = localStorage.getItem('refresh_token');
@@ -84,11 +93,12 @@ api.interceptors.response.use(
         }
       }
       
-      // Clear auth data and redirect
+      // Clear auth data and redirect to login (only for non-public endpoints)
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
       localStorage.removeItem('user');
       
+      // Only redirect if not already on login page
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }

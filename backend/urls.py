@@ -1,9 +1,10 @@
-# backend/urls.py
 from django.contrib import admin
-from django.http import HttpResponse
-from django.urls import path, include
+from django.http import HttpResponse, JsonResponse
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -45,7 +46,24 @@ def home_view(request):
     </html>
     """)
 
+# Global OPTIONS handler for CORS preflight
+@csrf_exempt
+@require_http_methods(["OPTIONS"])
+def cors_options_handler(request, *args, **kwargs):
+    """Handle CORS preflight requests globally"""
+    response = HttpResponse()
+    response.status_code = 200
+    response['Access-Control-Allow-Origin'] = request.headers.get('Origin', 'https://glow-mart-frontend.vercel.app')
+    response['Access-Control-Allow-Credentials'] = 'true'
+    response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+    response['Access-Control-Allow-Headers'] = 'authorization, content-type, x-csrftoken, accept, origin, user-agent'
+    response['Access-Control-Max-Age'] = '86400'
+    return response
+
 urlpatterns = [
+    # Global OPTIONS handler (must be first)
+    re_path(r'^api/.*$', cors_options_handler),
+    
     path('', home_view, name='home'),
     path('admin/', admin.site.urls),
     
