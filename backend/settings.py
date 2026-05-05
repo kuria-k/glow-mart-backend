@@ -726,6 +726,7 @@ INSTALLED_APPS = [
 
 # ================= MIDDLEWARE (FIXED ORDER) =================
 MIDDLEWARE = [
+    'backend.middleware.ForceCorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
