@@ -74,6 +74,7 @@ urlpatterns = [
     
     # App URLs
     path('api/inventory/', include('inventory.urls')),  
+    path('api/inventory', include('inventory.urls')),
     path('api/orders/', include('orders.urls')),  
     path('api/notifications/', include('notifications.urls')), 
     path('api/mpesa/', include('mpesa.urls')),
