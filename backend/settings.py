@@ -603,7 +603,6 @@
 # EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 # DEFAULT_FROM_EMAIL = 'GlowMart <noreply@glowmart.com>'
 
-
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -611,11 +610,7 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ================= SECURITY =================
-SECRET_KEY = os.environ.get(
-    "SECRET_KEY",
-    "django-insecure-CHANGE-THIS-IN-PRODUCTION"
-)
-
+SECRET_KEY = os.environ.get("SECRET_KEY", "change-this-in-production")
 DEBUG = False
 
 ALLOWED_HOSTS = [
@@ -648,21 +643,21 @@ INSTALLED_APPS = [
     "dashboard",
     "notifications",
     "reports",
-    "settings",
 ]
 
-# ================= MIDDLEWARE (CRITICAL ORDER FIX) =================
+# ================= MIDDLEWARE =================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     "corsheaders.middleware.CorsMiddleware",
 
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
 
+    # CSRF present but neutral (JWT used)
     "django.middleware.csrf.CsrfViewMiddleware",
 
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -674,14 +669,11 @@ ROOT_URLCONF = "backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -698,86 +690,44 @@ DATABASES = {
     }
 }
 
-# ================= PASSWORD VALIDATION =================
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
-
 # ================= INTERNATIONALIZATION =================
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Africa/Nairobi"
 USE_I18N = True
 USE_TZ = True
 
-# ================= STATIC / MEDIA =================
+# ================= STATIC =================
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
-
+# ================= MEDIA =================
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ================= WHITENOISE (PRODUCTION STATIC FIX) =================
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 # ================= CORS =================
-# CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOW_ALL_ORIGINS = True  # TEMPORARY TEST
-
-CORS_ALLOWED_ORIGINS = [
-    "https://glow-mart.vercel.app",
-    "https://glow-mart-frontend.vercel.app",
-    "http://localhost:5173",
-    "http://localhost:3000",
-]
-
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "authorization",
-    "content-type",
-    "origin",
-    "x-csrftoken",
-    "x-requested-with",
-]
-
-CORS_ALLOW_METHODS = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS",
-]
+CORS_ALLOW_ALL_ORIGINS = True   # keep TRUE until stable
+CORS_ALLOW_CREDENTIALS = False  # IMPORTANT for JWT (no cookies)
 
 # ================= CSRF =================
 CSRF_TRUSTED_ORIGINS = [
     "https://glow-mart.vercel.app",
     "https://glow-mart-frontend.vercel.app",
-    "https://glow-mart-backend-1.onrender.com",
 ]
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
 
-CSRF_COOKIE_SAMESITE = "None"
-SESSION_COOKIE_SAMESITE = "None"
-
-CSRF_COOKIE_HTTPONLY = False
-
-# IMPORTANT FOR RENDER PROXY
+# ================= PROXY / HTTPS FIX =================
+USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = False  # prevents redirect loops
 
-# STOP REDIRECT LOOP (YOUR MAIN ISSUE)
+# ================= URL HANDLING =================
 APPEND_SLASH = True
 
 # ================= REST FRAMEWORK =================
@@ -788,8 +738,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.AllowAny",
     ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
 }
 
 # ================= JWT =================
@@ -806,39 +754,32 @@ CHANNEL_LAYERS = {
     },
 }
 
-# ================= LOGGING =================
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {"class": "logging.StreamHandler"},
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
-}
-
 # ================= M-PESA =================
-MPESA_API_URL = "https://sandbox.safaricom.co.ke"
+
+MPESA_ENV = os.environ.get("MPESA_ENV", "sandbox")
+
+if MPESA_ENV == "production":
+    MPESA_API_URL = "https://api.safaricom.co.ke"
+else:
+    MPESA_API_URL = "https://sandbox.safaricom.co.ke"
+
+BASE_BACKEND_URL = "https://glow-mart-backend-1.onrender.com"
 
 MPESA_CONFIG = {
-    "CONSUMER_KEY": os.environ.get("MPESA_CONSUMER_KEY", ""),
-    "CONSUMER_SECRET": os.environ.get("MPESA_CONSUMER_SECRET", ""),
-    "BUSINESS_SHORTCODE": "174379",
-    "PASSKEY": os.environ.get("MPESA_PASSKEY", ""),
-    "CALLBACK_URL": "https://glow-mart-backend-1.onrender.com/api/mpesa/callback/",
-    "TIMEOUT_URL": "https://glow-mart-backend-1.onrender.com/api/mpesa/timeout/",
-    "RESULT_URL": "https://glow-mart-backend-1.onrender.com/api/mpesa/result/",
+    "CONSUMER_KEY": os.environ.get("MPESA_CONSUMER_KEY"),
+    "CONSUMER_SECRET": os.environ.get("MPESA_CONSUMER_SECRET"),
+    "BUSINESS_SHORTCODE": os.environ.get("MPESA_SHORTCODE", "174379"),
+    "PASSKEY": os.environ.get("MPESA_PASSKEY"),
+
+    "CALLBACK_URL": f"{BASE_BACKEND_URL}/api/mpesa/callback/",
+    "TIMEOUT_URL": f"{BASE_BACKEND_URL}/api/mpesa/timeout/",
+    "RESULT_URL": f"{BASE_BACKEND_URL}/api/mpesa/result/",
 }
 
 # ================= SECURITY HEADERS =================
-if not DEBUG:
-    SECURE_SSL_REDIRECT = False
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = "DENY"
-    SECURE_HSTS_SECONDS = 0
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
 
 # ================= EMAIL =================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
