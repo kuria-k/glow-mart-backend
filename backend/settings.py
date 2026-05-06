@@ -616,25 +616,30 @@ SECRET_KEY = 'django-insecure-zedp_=pj+frk-x5*y$dsqk0%*50rk1kyddg=9(-4-h$*(2-hjj
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'glow-mart-backend-1.onrender.com',
-    '.onrender.com',
-    'hypermodest-irena-washy.ngrok-free.dev',
-    'localhost',
-    '127.0.0.1',
+    "glow-mart-backend-1.onrender.com",
+    ".onrender.com",
+    "localhost",
+    "127.0.0.1",
 ]
 
 # ================= CORS SETTINGS =================
 CORS_ALLOW_ALL_ORIGINS = False
 
+# CORS_ALLOWED_ORIGINS = [
+#     "https://glow-mart.vercel.app",
+#     "https://glow-mart-frontend.vercel.app",
+#     "http://localhost:5173",
+#     "http://localhost:3000",
+#     "http://localhost:5500",
+#     "http://127.0.0.1:5173",
+#     "http://127.0.0.1:3000",
+#     "https://hypermodest-irena-washy.ngrok-free.dev",
+# ]
+
 CORS_ALLOWED_ORIGINS = [
     "https://glow-mart.vercel.app",
     "https://glow-mart-frontend.vercel.app",
     "http://localhost:5173",
-    "http://localhost:3000",
-    "http://localhost:5500",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:3000",
-    "https://hypermodest-irena-washy.ngrok-free.dev",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -687,7 +692,7 @@ CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
 
 # CHANGE THIS - Important! Prevents trailing slash redirects
-APPEND_SLASH = True  # Changed from True to False
+APPEND_SLASH = False  # Changed from True to False
 
 # ================= ASGI / CHANNELS =================
 ASGI_APPLICATION = "backend.asgi.application"
@@ -727,22 +732,17 @@ INSTALLED_APPS = [
 
 # ================= MIDDLEWARE (UPDATED ORDER) =================
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-
     'corsheaders.middleware.CorsMiddleware',
+
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
 
-    'django.middleware.csrf.CsrfViewMiddleware',
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
 
 
 
@@ -873,7 +873,7 @@ LOGGING = {
 if not DEBUG:
     SECURE_SSL_REDIRECT = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    USE_X_FORWARDED_HOST = False
+    USE_X_FORWARDED_HOST = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 

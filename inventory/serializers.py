@@ -39,50 +39,20 @@
 #             "created_at",
 #         ]
 
-from rest_framework import serializers
-from django.utils import timezone
-from .models import Product, Category, Supplier, ProductImage
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from . import views
 
+router = DefaultRouter()
+router.register(r'products', views.ProductViewSet, basename='product')
+router.register(r'categories', views.CategoryViewSet, basename='category')
+router.register(r'suppliers', views.SupplierViewSet, basename='supplier')
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
-
-
-class SupplierSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Supplier
-        fields = "__all__"
-
-
-class ProductImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductImage
-        fields = ["id", "image", "caption"]
-
-
-class ProductSerializer(serializers.ModelSerializer):
-
-    category_detail = CategorySerializer(source="category", read_only=True)
-    supplier_detail = SupplierSerializer(source="supplier", read_only=True)
-
-    extra_images = ProductImageSerializer(many=True, read_only=True)
-
-    current_price = serializers.SerializerMethodField()
-    is_discount_active = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Product
-        fields = "__all__"
-
-    def get_is_discount_active(self, obj):
-        return obj.is_discount_active
-
-    def get_current_price(self, obj):
-        return float(obj.current_price)
-
-    def validate_discount_percent(self, value):
-        if value < 0 or value > 100:
-            raise serializers.ValidationError("Discount must be 0–100")
-        return value
+urlpatterns = [
+    # Router URLs (handles both with and without trailing slashes)
+    path('', include(router.urls)),
+    
+    # Public endpoints (handles both with and without trailing slashes)
+    path('public/products/', views.PublicProductList.as_view(), name='public-products'),
+    path('public/categories/', views.PublicCategoryList.as_view(), name='public-categories'),
+]

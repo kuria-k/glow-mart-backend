@@ -202,9 +202,8 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 
 # ---------------- CATEGORY ----------------
-
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by("id")
     serializer_class = CategorySerializer
 
     def get_permissions(self):
@@ -223,3 +222,11 @@ class SupplierViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
         return [IsAuthenticated()]
+    
+class PublicCategoryList(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        categories = Category.objects.all().order_by("id")
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
