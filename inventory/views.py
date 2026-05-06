@@ -158,12 +158,12 @@ from .serializers import ProductSerializer, CategorySerializer, SupplierSerializ
 
 # ---------------- PUBLIC ----------------
 
-class PublicProductList(APIView):
-    permission_classes = [AllowAny]
+# class PublicProductList(APIView):
+#     permission_classes = [AllowAny]
 
-    def get(self, request):
-        products = Product.objects.all()
-        return Response(ProductSerializer(products, many=True).data)
+#     def get(self, request):
+#         products = Product.objects.all()
+#         return Response(ProductSerializer(products, many=True).data)
 
 
 class PublicCategoryList(APIView):

@@ -708,8 +708,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ================= CORS =================
-CORS_ALLOW_ALL_ORIGINS = True   # keep TRUE until stable
-CORS_ALLOW_CREDENTIALS = False  # IMPORTANT for JWT (no cookies)
+CORS_ALLOWED_ORIGINS = [
+    "https://glow-mart-frontend.vercel.app",
+    "https://glow-mart.vercel.app",
+    "http://localhost:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = False
 
 # ================= CSRF =================
 CSRF_TRUSTED_ORIGINS = [
