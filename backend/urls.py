@@ -62,7 +62,7 @@ def cors_options_handler(request, *args, **kwargs):
 
 urlpatterns = [
     # Global OPTIONS handler (must be first)
-    re_path(r'^api/.*$', cors_options_handler),
+    # re_path(r'^api/.*$', cors_options_handler),
     
     path('', home_view, name='home'),
     path('admin/', admin.site.urls),

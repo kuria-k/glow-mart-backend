@@ -687,7 +687,7 @@ CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = 'csrftoken'
 
 # CHANGE THIS - Important! Prevents trailing slash redirects
-APPEND_SLASH = False  # Changed from True to False
+APPEND_SLASH = True  # Changed from True to False
 
 # ================= ASGI / CHANNELS =================
 ASGI_APPLICATION = "backend.asgi.application"
@@ -727,7 +727,6 @@ INSTALLED_APPS = [
 
 # ================= MIDDLEWARE (UPDATED ORDER) =================
 MIDDLEWARE = [
-    'backend.middleware.ForceCorsMiddleware',  # Your custom middleware FIRST
     'corsheaders.middleware.CorsMiddleware',   # Corsheaders second
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -868,7 +867,7 @@ LOGGING = {
 # ================= SECURITY (FIXED FOR RENDER) =================
 if not DEBUG:
     SECURE_SSL_REDIRECT = False
-    SECURE_PROXY_SSL_HEADER = None
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     USE_X_FORWARDED_HOST = False
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
