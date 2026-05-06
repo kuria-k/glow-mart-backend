@@ -46,23 +46,11 @@ def home_view(request):
     </html>
     """)
 
-# Global OPTIONS handler for CORS preflight
-@csrf_exempt
-def cors_options_handler(request, *args, **kwargs):
-    if request.method == "OPTIONS":
-        response = HttpResponse()
-        response.status_code = 200
-        response['Access-Control-Allow-Origin'] = request.headers.get('Origin', '*')
-        response['Access-Control-Allow-Credentials'] = 'true'
-        response['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-        response['Access-Control-Allow-Headers'] = 'authorization, content-type, x-csrftoken'
-        return response
 
-    return None  
 
 urlpatterns = [
     # Global OPTIONS handler (must be first)
-    # re_path(r'^api/.*$', cors_options_handler),
+   
     
     path('', home_view, name='home'),
     path('admin/', admin.site.urls),
