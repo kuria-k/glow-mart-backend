@@ -28,7 +28,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: false,
+  withCredentials: true,
 });
 
 // Request interceptor - ADD JWT TOKEN
@@ -117,7 +117,7 @@ export const publicApi = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-   withCredentials: false,
+   withCredentials: true,
 });
 
 // -------------------- AUTHENTICATION --------------------
@@ -202,7 +202,7 @@ export const getUser = () => {
 };
 
 // -------------------- INVENTORY --------------------
-export const getProducts = () => api.get('/inventory/products/');
+export const getProducts = () => publicApi.get('/inventory/public/products/');
 export const getPublicProducts = () => publicApi.get('/inventory/public/products/');
 export const getProduct = (id) => api.get(`/inventory/products/${id}/`);
 export const createProduct = (data) => api.post('/inventory/products/', data);
@@ -210,7 +210,7 @@ export const updateProduct = (id, data) => api.put(`/inventory/products/${id}/`,
 export const deleteProduct = (id) => api.delete(`/inventory/products/${id}/`);
 
 // --------------- Category Endpoints -------------------
-export const getCategories = () => api.get('/inventory/categories/');
+export const getCategories = () => publicApi.get('/inventory/public/categories/');
 export const getPublicCategories = () => publicApi.get('/inventory/public/categories/');
 export const createCategory = (data) => api.post('/inventory/categories/', data);
 export const updateCategory = (id, data) => api.put(`/inventory/categories/${id}/`, data);

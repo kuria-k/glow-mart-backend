@@ -729,7 +729,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ================= CORS =================
-CORS_ALLOW_ALL_ORIGINS = False
+# CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True  # TEMPORARY TEST
 
 CORS_ALLOWED_ORIGINS = [
     "https://glow-mart.vercel.app",
@@ -777,7 +778,7 @@ CSRF_COOKIE_HTTPONLY = False
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # STOP REDIRECT LOOP (YOUR MAIN ISSUE)
-APPEND_SLASH = False
+# APPEND_SLASH = False
 
 # ================= REST FRAMEWORK =================
 REST_FRAMEWORK = {
