@@ -713,8 +713,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://glow-mart-frontend.vercel.app",
     "https://glow-mart.vercel.app",
     "http://localhost:5173",
-    
-]
+    "https://glow-mart-backend-1.onrender.com",  # Add your backend
+] 
+
 
 CORS_ALLOW_CREDENTIALS = False
 

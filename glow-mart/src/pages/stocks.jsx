@@ -1936,53 +1936,24 @@ const Products = () => {
 
   // Change imports to use public endpoints
 
+// Your existing fetchProducts function (no changes needed)
 const fetchProducts = useCallback(async () => {
   setLoading(true);
   setError(null);
   try {
-    // Use public endpoints (no auth required, faster)
-    const catRes = await getPublicCategories();
+    const catRes = await getCategories();
     const cats = Array.isArray(catRes.data) ? catRes.data : (catRes.data?.results || []);
     setCategories(cats);
 
-    // For products, we'll fetch all and filter client-side for better UX
-    // Or you can add filtering to your backend public endpoint
-    const res = await getPublicProducts();
-    let raw = Array.isArray(res.data) ? res.data : (res.data?.results || []);
-    
-    // Apply filters client-side (or you can modify backend to accept filters)
-    let filtered = raw;
-    
-    // Apply category filter
-    if (selectedCategoryId) {
-      filtered = filtered.filter(p => p.category === parseInt(selectedCategoryId) || p.category?.id === parseInt(selectedCategoryId));
-    }
-    
-    // Apply search filter
-    if (searchTerm.trim()) {
-      const term = searchTerm.trim().toLowerCase();
-      filtered = filtered.filter(p => 
-        p.name?.toLowerCase().includes(term) || 
-        p.description?.toLowerCase().includes(term)
-      );
-    }
-    
-    // Apply price range filter
-    if (priceRange.min !== '') {
-      filtered = filtered.filter(p => (p.price || p.discounted_price || 0) >= Number(priceRange.min));
-    }
-    if (priceRange.max !== '') {
-      filtered = filtered.filter(p => (p.price || p.discounted_price || 0) <= Number(priceRange.max));
-    }
-    
-    // Apply sorting
-    const sorted = [...filtered];
-    if (sortBy === 'price_asc') sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
-    if (sortBy === 'price_desc') sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
-    if (sortBy === 'name_asc') sorted.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-    if (sortBy === 'name_desc') sorted.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
-    
-    setAllProducts(sorted);
+    const params = { page: 1, page_size: 500, ordering: toApiOrdering(sortBy) };
+    if (selectedCategoryId) params.category = selectedCategoryId;
+    if (searchTerm.trim()) params.search = searchTerm.trim();
+    if (priceRange.min !== '') params.min_price = Number(priceRange.min);
+    if (priceRange.max !== '') params.max_price = Number(priceRange.max);
+
+    const res = await getProducts(params);
+    const raw = Array.isArray(res.data) ? res.data : (res.data?.results || []);
+    setAllProducts(raw);
 
     const t = setTimeout(() => {
       if (!sessionStorage.getItem('newsletterShown')) setShowNewsletter(true);

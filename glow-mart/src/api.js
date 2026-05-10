@@ -295,10 +295,10 @@ export const clearTokens = () => {
   localStorage.removeItem("refreshToken");
 }
 
-// Request interceptor - add token to requests that need auth
+// Request interceptor - add token for non-public endpoints
 api.interceptors.request.use(
   (config) => {
-    // Only add token for admin endpoints (not public)
+    // Only add token for non-public endpoints
     if (!config.url.includes('/public/')) {
       const token = getAccessToken();
       if (token) {
@@ -310,13 +310,44 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ========== PUBLIC ENDPOINTS (No Auth Required - for normal users) ==========
+// Response interceptor for token refresh
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = getRefreshToken();
+      
+      if (refreshToken) {
+        try {
+          const res = await axios.post(`${API_BASE}/user/token/refresh/`, {
+            refresh: refreshToken,
+          });
+          
+          if (res.data.access) {
+            localStorage.setItem("accessToken", res.data.access);
+            originalRequest.headers.Authorization = `Bearer ${res.data.access}`;
+            return api(originalRequest);
+          }
+        } catch (refreshError) {
+          clearTokens();
+          window.location.href = "/login";
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ========== PUBLIC ENDPOINTS (No Auth Required) ==========
 export const getPublicProducts = () => api.get("/inventory/public/products/");
 export const getPublicProduct = (id) => api.get(`/inventory/public/products/${id}/`);
 export const getPublicCategories = () => api.get("/inventory/public/categories/");
 
-// ========== MIXED ENDPOINTS (Read public, Write requires auth) ==========
-export const getProducts = () => api.get("/inventory/products/");
+// ========== INVENTORY ENDPOINTS (Mixed: Read Public, Write Requires Auth) ==========
+export const getProducts = (params) => api.get("/inventory/products/", { params });
 export const getProduct = (id) => api.get(`/inventory/products/${id}/`);
 export const createProduct = (data) => api.post("/inventory/products/", data);
 export const updateProduct = (id, data) => api.put(`/inventory/products/${id}/`, data);
@@ -336,7 +367,14 @@ export const createSupplier = (data) => api.post("/inventory/suppliers/", data);
 export const updateSupplier = (id, data) => api.put(`/inventory/suppliers/${id}/`, data);
 export const deleteSupplier = (id) => api.delete(`/inventory/suppliers/${id}/`);
 
-// ========== AUTH ==========
+// ========== ORDERS ENDPOINTS ==========
+export const getOrders = () => api.get("/orders/");
+export const getOrder = (id) => api.get(`/orders/${id}/`);
+export const createOrder = (orderData) => api.post("/orders/", orderData);
+export const updateOrder = (id, data) => api.patch(`/orders/${id}/`, data);
+export const deleteOrder = (id) => api.delete(`/orders/${id}/`);
+
+// ========== AUTH ENDPOINTS ==========
 export const login = async (username, password) => {
   try {
     const response = await api.post("/user/token/", { username, password });
@@ -363,8 +401,7 @@ export const login = async (username, password) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
+  clearTokens();
   localStorage.removeItem("user");
   localStorage.removeItem("cart");
   sessionStorage.clear();
@@ -372,7 +409,7 @@ export const logout = () => {
 };
 
 export const isAuthenticated = () => {
-  const token = localStorage.getItem("accessToken");
+  const token = getAccessToken();
   if (!token) return false;
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
@@ -389,6 +426,23 @@ export const getUser = () => {
   } catch {
     return null;
   }
+};
+
+// ========== STOCK FILTERS ==========
+export const getLowStockProducts = async () => {
+  const res = await getProducts();
+  return {
+    ...res,
+    data: res.data.filter((p) => p.stock > 0 && p.stock < 10),
+  };
+};
+
+export const getOutOfStockProducts = async () => {
+  const res = await getProducts();
+  return {
+    ...res,
+    data: res.data.filter((p) => p.stock === 0),
+  };
 };
 
 export default api;
