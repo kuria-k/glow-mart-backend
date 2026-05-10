@@ -146,7 +146,7 @@
 #     response["Access-Control-Allow-Headers"] = "authorization, content-type"
 #     return response
 
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -156,33 +156,39 @@ from .models import Product, Category, Supplier
 from .serializers import ProductSerializer, CategorySerializer, SupplierSerializer
 
 
-# ---------------- PUBLIC ----------------
+# ========== PUBLIC ENDPOINTS (No Authentication) ==========
 
-# class PublicProductList(APIView):
-#     permission_classes = [AllowAny]
-
-#     def get(self, request):
-#         products = Product.objects.all()
-#         return Response(ProductSerializer(products, many=True).data)
-
-
-class PublicCategoryList(APIView):
+class PublicProductList(generics.ListAPIView):
+    """Public endpoint for products - no login required"""
+    queryset = Product.objects.filter(is_active=True) if hasattr(Product, 'is_active') else Product.objects.all()
+    serializer_class = ProductSerializer
     permission_classes = [AllowAny]
 
-    def get(self, request):
-        categories = Category.objects.all()
-        return Response(CategorySerializer(categories, many=True).data)
+class PublicProductDetail(generics.RetrieveAPIView):
+    """Public endpoint for single product - no login required"""
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+
+class PublicCategoryList(generics.ListAPIView):
+    """Public endpoint for categories - no login required"""
+    queryset = Category.objects.all().order_by("id")
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
 
 
-# ---------------- PRODUCT ----------------
+# ========== ADMIN/PROTECTED ENDPOINTS (Requires Authentication) ==========
 
 class ProductViewSet(viewsets.ModelViewSet):
+    """Admin endpoint for products - requires auth for modifications"""
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     def get_permissions(self):
+        # List and retrieve are public (read-only)
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
+        # Create, update, delete require authentication
         return [IsAuthenticated()]
 
     def list(self, request, *args, **kwargs):
@@ -191,6 +197,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"])
     def check_stock(self, request, pk=None):
+        """Check if product has sufficient stock (public endpoint)"""
         product = self.get_object()
         qty = int(request.query_params.get("quantity", 1))
 
@@ -201,32 +208,27 @@ class ProductViewSet(viewsets.ModelViewSet):
         })
 
 
-# ---------------- CATEGORY ----------------
 class CategoryViewSet(viewsets.ModelViewSet):
+    """Admin endpoint for categories - requires auth for modifications"""
     queryset = Category.objects.all().order_by("id")
     serializer_class = CategorySerializer
 
     def get_permissions(self):
+        # List and retrieve are public (read-only)
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
+        # Create, update, delete require authentication
         return [IsAuthenticated()]
 
 
-# ---------------- SUPPLIER ----------------
-
 class SupplierViewSet(viewsets.ModelViewSet):
+    """Admin endpoint for suppliers - requires auth for modifications"""
     queryset = Supplier.objects.all()
     serializer_class = SupplierSerializer
 
     def get_permissions(self):
+        # List and retrieve are public (read-only)
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
+        # Create, update, delete require authentication
         return [IsAuthenticated()]
-    
-class PublicCategoryList(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        categories = Category.objects.all().order_by("id")
-        serializer = CategorySerializer(categories, many=True)
-        return Response(serializer.data)

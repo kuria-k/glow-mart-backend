@@ -6,7 +6,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView as JWTTokenRefreshView
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 import logging
@@ -38,12 +38,15 @@ class AdminLoginView(APIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
             
             # Authenticate user
+            
+
             user = authenticate(username=username, password=password)
             
             # Check if user exists and is superuser
             if user and user.is_superuser:
                 # Generate JWT tokens
-                refresh = RefreshToken.for_user(user)
+                access_token = AccessToken.for_user(user)
+                refresh_token = RefreshToken.for_user(user)
                 
                 # Prepare response
                 response_data = {
@@ -51,6 +54,8 @@ class AdminLoginView(APIView):
                     'username': user.username,
                     'is_superuser': True,
                     'user_id': user.id,
+                    'accessToken': access_token,
+                    'refreshToken' : refresh_token,
                     'message': 'Login successful'
                 }
                 
@@ -59,7 +64,7 @@ class AdminLoginView(APIView):
                 # Set HttpOnly cookies
                 response.set_cookie(
                     'access_token',
-                    str(refresh.access_token),
+                    str(refresh_token.access_token),
                     httponly=True,
                     secure=False,  # Set to True in production with HTTPS
                     samesite='Lax',
@@ -69,7 +74,7 @@ class AdminLoginView(APIView):
                 
                 response.set_cookie(
                     'refresh_token',
-                    str(refresh),
+                    str(refresh_token),
                     httponly=True,
                     secure=False,
                     samesite='Lax',

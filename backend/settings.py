@@ -674,6 +674,7 @@ TEMPLATES = [
             "context_processors": [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages"
             ],
         },
     },
@@ -712,6 +713,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://glow-mart-frontend.vercel.app",
     "https://glow-mart.vercel.app",
     "http://localhost:5173",
+    
 ]
 
 CORS_ALLOW_CREDENTIALS = False
@@ -720,6 +722,10 @@ CORS_ALLOW_CREDENTIALS = False
 CSRF_TRUSTED_ORIGINS = [
     "https://glow-mart.vercel.app",
     "https://glow-mart-frontend.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000"
+
 ]
 
 CSRF_COOKIE_SECURE = False
